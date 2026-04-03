@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import session from 'express-session';
+import connectPgSimple from 'connect-pg-simple';
+import { Pool } from 'pg';
 import dotenv from 'dotenv';
 import passport from './config/passport';
 
@@ -14,6 +16,13 @@ dotenv.config();
 
 const app = express();
 
+// PostgreSQL connection pool for sessions
+const pgPool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
+
+const PgSession = connectPgSimple(session);
+
 // Middleware
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
@@ -22,15 +31,21 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Session configuration
+// Session configuration with PostgreSQL store
 app.use(
   session({
+    store: new PgSession({
+      pool: pgPool,
+      tableName: 'session',
+      createTableIfMissing: true,
+    }),
     secret: process.env.SESSION_SECRET || 'guild-secret-key',
     resave: false,
     saveUninitialized: false,
     cookie: {
       secure: process.env.NODE_ENV === 'production',
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     },
   })
 );
@@ -57,8 +72,12 @@ app.use((req, res) => {
 
 // Error handler
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
+  console.error('Error:', err);
+  res.status(500).json({
+    error: 'Something went wrong!',
+    message: process.env.NODE_ENV === 'development' ? err.message : undefined,
+    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+  });
 });
 
 export default app;
