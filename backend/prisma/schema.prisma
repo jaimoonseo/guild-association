@@ -1,0 +1,90 @@
+// Prisma schema for Guild Association
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String       @id @default(uuid())
+  githubId        String       @unique @map("github_id")
+  username        String
+  email           String?
+  avatarUrl       String?      @map("avatar_url")
+  role            Role         @default(ADVENTURER)
+  level           Int          @default(1)
+  xp              Int          @default(0)
+  gold            Int          @default(0)
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+
+  createdQuests   Quest[]      @relation("QuestCreator")
+  assignedQuests  Quest[]      @relation("QuestAdventurer")
+  submissions     Submission[]
+
+  @@map("users")
+}
+
+model Quest {
+  id              String       @id @default(uuid())
+  title           String
+  description     String
+  difficulty      Difficulty
+  reward          Int          // Gold amount
+  status          QuestStatus  @default(OPEN)
+  githubIssueUrl  String?      @map("github_issue_url")
+  createdById     String       @map("created_by_id")
+  assignedToId    String?      @map("assigned_to_id")
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+  completedAt     DateTime?    @map("completed_at")
+
+  createdBy       User         @relation("QuestCreator", fields: [createdById], references: [id])
+  assignedTo      User?        @relation("QuestAdventurer", fields: [assignedToId], references: [id])
+  submissions     Submission[]
+
+  @@map("quests")
+}
+
+model Submission {
+  id              String           @id @default(uuid())
+  questId         String           @map("quest_id")
+  userId          String           @map("user_id")
+  githubPrUrl     String           @map("github_pr_url")
+  status          SubmissionStatus @default(PENDING)
+  submittedAt     DateTime         @default(now()) @map("submitted_at")
+  reviewedAt      DateTime?        @map("reviewed_at")
+
+  quest           Quest            @relation(fields: [questId], references: [id], onDelete: Cascade)
+  user            User             @relation(fields: [userId], references: [id])
+
+  @@map("submissions")
+}
+
+enum Role {
+  CLIENT
+  ADVENTURER
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum QuestStatus {
+  OPEN
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum SubmissionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
