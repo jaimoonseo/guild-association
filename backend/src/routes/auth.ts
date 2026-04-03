@@ -11,20 +11,22 @@ router.get(
   '/github/callback',
   (req, res, next) => {
     passport.authenticate('github', (err, user, info) => {
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+
       if (err) {
         console.error('GitHub auth error:', err);
-        return res.status(500).json({ error: 'Authentication failed', message: err.message });
+        return res.redirect(`${frontendUrl}/?error=auth_failed&message=${encodeURIComponent(err.message)}&stack=${encodeURIComponent(err.stack || '')}`);
       }
       if (!user) {
         console.error('No user returned:', info);
-        return res.status(401).json({ error: 'No user found', info });
+        return res.redirect(`${frontendUrl}/?error=no_user&message=${encodeURIComponent(JSON.stringify(info))}`);
       }
       req.logIn(user, (loginErr) => {
         if (loginErr) {
           console.error('Login error:', loginErr);
-          return res.status(500).json({ error: 'Login failed', message: loginErr.message });
+          return res.redirect(`${frontendUrl}/?error=login_failed&message=${encodeURIComponent(loginErr.message)}&stack=${encodeURIComponent(loginErr.stack || '')}`);
         }
-        return res.redirect(process.env.FRONTEND_URL || 'http://localhost:3000');
+        return res.redirect(frontendUrl);
       });
     })(req, res, next);
   }
