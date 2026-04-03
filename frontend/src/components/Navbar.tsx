@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { FaTrophy, FaScroll, FaSignOutAlt } from 'react-icons/fa';
 import { User } from '../types';
+import { authAPI } from '../api/auth';
 
 interface NavbarProps {
   user: User | null;
@@ -39,9 +40,9 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
               </button>
             </>
           ) : (
-            <a href="/auth/github" className="rpg-button" style={{ textDecoration: 'none', padding: '8px 16px' }}>
+            <button onClick={() => authAPI.loginWithGitHub()} className="rpg-button" style={{ padding: '8px 16px' }}>
               Login with GitHub
-            </a>
+            </button>
           )}
         </div>
       </div>
