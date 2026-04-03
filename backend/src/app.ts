@@ -65,6 +65,23 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Guild Association API is running' });
 });
 
+// Database test
+app.get('/test-db', async (req, res) => {
+  try {
+    const prisma = require('./config/database').default;
+    const userCount = await prisma.user.count();
+    res.json({ success: true, userCount, message: 'Database connected successfully' });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      stack: error.stack,
+      name: error.name,
+      code: error.code
+    });
+  }
+});
+
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
