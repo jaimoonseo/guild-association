@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { userAPI } from '../api/users';
 import { LeaderboardEntry } from '../types';
 import { FaTrophy, FaCoins, FaStar } from 'react-icons/fa';

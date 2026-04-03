@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Quest } from '../types';
 import { FaStar, FaCoins, FaUser } from 'react-icons/fa';
 

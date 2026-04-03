@@ -1,6 +1,5 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import { FaTrophy, FaScroll, FaUser, FaSignOutAlt } from 'react-icons/fa';
+import { FaTrophy, FaScroll, FaSignOutAlt } from 'react-icons/fa';
 import { User } from '../types';
 
 interface NavbarProps {
