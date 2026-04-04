@@ -10,7 +10,7 @@ router.get('/github', passport.authenticate('github', { scope: ['user:email'] })
 router.get(
   '/github/callback',
   (req, res, next) => {
-    passport.authenticate('github', (err, user, info) => {
+    passport.authenticate('github', (err: any, user: any, info: any) => {
       const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
 
       if (err) {
@@ -21,7 +21,7 @@ router.get(
         console.error('No user returned:', info);
         return res.redirect(`${frontendUrl}/?error=no_user&message=${encodeURIComponent(JSON.stringify(info))}`);
       }
-      req.logIn(user, (loginErr) => {
+      req.logIn(user, (loginErr: any) => {
         if (loginErr) {
           console.error('Login error:', loginErr);
           return res.redirect(`${frontendUrl}/?error=login_failed&message=${encodeURIComponent(loginErr.message)}&stack=${encodeURIComponent(loginErr.stack || '')}`);
