@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import passport from '../config/passport';
+import type { Request, Response, NextFunction } from 'express';
 
 const router = Router();
 
