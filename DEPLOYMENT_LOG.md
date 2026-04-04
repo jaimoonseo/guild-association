@@ -126,8 +126,26 @@ https://guild-association-backend.vercel.app/auth/github/callback?code=...
 - Supabase (Database)
 - GitHub (OAuth Provider)
 
+## 새 Supabase 데이터베이스 설정 (2026-04-04)
+
+### ✅ 완료:
+1. 새 Supabase 프로젝트 생성: `guild-association`
+2. Project ID: `pnzhxxowdpswfeugnsxo`
+3. Region: AWS ap-south-1 (Mumbai)
+4. Database Password: `nevv8CT0hXfa6MRv`
+5. 데이터베이스 스키마 생성 완료 (SQL Editor)
+
+### 📝 새 DATABASE_URL:
+```
+postgresql://postgres:nevv8CT0hXfa6MRv@aws-0-ap-south-1.pooler.supabase.com:6543/postgres?pgbouncer=true
+```
+
+### ⏳ 대기 중:
+- Vercel 환경변수 업데이트 필요
+
 ## 참고 사항
 
 - 모든 코드는 Git으로 버전 관리 중
 - 자동 배포: GitHub push → Vercel 자동 배포
 - 배포 시간: 약 1-2분
+- Supabase Transaction Pooler 사용 (serverless 최적화)
