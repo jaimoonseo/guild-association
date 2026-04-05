@@ -27,6 +27,14 @@ router.get(
           console.error('Login error:', loginErr);
           return res.redirect(`${frontendUrl}/?error=login_failed&message=${encodeURIComponent(loginErr.message)}&stack=${encodeURIComponent(loginErr.stack || '')}`);
         }
+
+        console.log('=== Login Success ===');
+        console.log('User logged in:', user.id);
+        console.log('Session ID:', req.sessionID);
+        console.log('Session:', JSON.stringify(req.session));
+        console.log('Set-Cookie header will be:', res.getHeader('set-cookie'));
+        console.log('=====================');
+
         return res.redirect(frontendUrl);
       });
     })(req, res, next);
