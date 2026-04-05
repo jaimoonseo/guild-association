@@ -45,10 +45,25 @@ router.post('/logout', (req, res) => {
 
 // Get current user
 router.get('/me', (req, res) => {
+  console.log('=== /auth/me Debug ===');
+  console.log('Session ID:', req.sessionID);
+  console.log('Session:', JSON.stringify(req.session));
+  console.log('Cookies:', req.headers.cookie);
+  console.log('Is Authenticated:', req.isAuthenticated());
+  console.log('User:', req.user);
+  console.log('=====================');
+
   if (req.isAuthenticated()) {
     res.json(req.user);
   } else {
-    res.status(401).json({ error: 'Not authenticated' });
+    res.status(401).json({
+      error: 'Not authenticated',
+      debug: {
+        hasSession: !!req.session,
+        sessionID: req.sessionID,
+        hasCookie: !!req.headers.cookie
+      }
+    });
   }
 });
 
